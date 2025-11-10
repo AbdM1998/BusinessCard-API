@@ -1,5 +1,7 @@
 using BusinessCardAPI.Data;
-using BusinessCardAPI.Data.Repositories;
+using BusinessCardAPI.Interfaces.Repositories;
+using BusinessCardAPI.Interfaces.Services;
+using BusinessCardAPI.Repositories;
 using BusinessCardAPI.Services;
 using BusinessCardAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Localization;

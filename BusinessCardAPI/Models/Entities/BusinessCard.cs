@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BusinessCardAPI.Models
+namespace BusinessCardAPI.Models.Entities
 {
     public class BusinessCard
     {

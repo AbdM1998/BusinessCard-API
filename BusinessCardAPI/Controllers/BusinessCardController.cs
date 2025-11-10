@@ -1,6 +1,6 @@
-﻿using BusinessCardAPI.Models;
+﻿using BusinessCardAPI.Interfaces.Services;
 using BusinessCardAPI.Models.DTOs;
-using BusinessCardAPI.Services.Interfaces;
+using BusinessCardAPI.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Resources;

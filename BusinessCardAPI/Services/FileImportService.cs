@@ -1,7 +1,7 @@
 ﻿using BusinessCardAPI.Exceptions;
-using BusinessCardAPI.Models;
+using BusinessCardAPI.Interfaces.Services;
 using BusinessCardAPI.Models.DTOs;
-using BusinessCardAPI.Services.Interfaces;
+using BusinessCardAPI.Models.Entities;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;

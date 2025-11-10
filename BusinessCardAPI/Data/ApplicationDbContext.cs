@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using BusinessCardAPI.Models;
+using BusinessCardAPI.Models.Entities;
 
 namespace BusinessCardAPI.Data
 {

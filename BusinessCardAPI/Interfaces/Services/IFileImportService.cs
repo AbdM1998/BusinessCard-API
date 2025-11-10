@@ -1,7 +1,7 @@
-﻿using BusinessCardAPI.Models;
-using BusinessCardAPI.Models.DTOs;
+﻿using BusinessCardAPI.Models.DTOs;
+using BusinessCardAPI.Models.Entities;
 
-namespace BusinessCardAPI.Services.Interfaces
+namespace BusinessCardAPI.Interfaces.Services
 {
     public interface IFileImportService
     {

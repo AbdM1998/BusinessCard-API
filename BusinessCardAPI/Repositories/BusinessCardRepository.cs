@@ -1,8 +1,10 @@
-﻿using BusinessCardAPI.Models;
+﻿using BusinessCardAPI.Data;
+using BusinessCardAPI.Interfaces.Repositories;
 using BusinessCardAPI.Models.DTOs;
+using BusinessCardAPI.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BusinessCardAPI.Data.Repositories
+namespace BusinessCardAPI.Repositories
 {
 
 

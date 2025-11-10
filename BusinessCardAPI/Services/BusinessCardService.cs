@@ -1,8 +1,8 @@
-﻿using BusinessCardAPI.Data.Repositories;
-using BusinessCardAPI.Exceptions;
-using BusinessCardAPI.Models;
+﻿using BusinessCardAPI.Exceptions;
+using BusinessCardAPI.Interfaces.Repositories;
+using BusinessCardAPI.Interfaces.Services;
 using BusinessCardAPI.Models.DTOs;
-using BusinessCardAPI.Services.Interfaces;
+using BusinessCardAPI.Models.Entities;
 using BusinessCardAPI.Utilities;
 using Microsoft.Extensions.Localization;
 using Resources;
