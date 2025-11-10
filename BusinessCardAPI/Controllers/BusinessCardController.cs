@@ -13,12 +13,17 @@ namespace BusinessCardAPI.Controllers
     {
         private readonly IBusinessCardService _service;
         private readonly IStringLocalizer<SharedResource> _localizer;
+        private readonly IFileImportService _fileService;
+        private readonly IExportService _exportService;
 
-        public BusinessCardController(IBusinessCardService service, IStringLocalizer<SharedResource> localizer )
+        public BusinessCardController(IBusinessCardService service, IStringLocalizer<SharedResource> localizer, IFileImportService fileService, IExportService exportService)
         {
             _service = service;
             _localizer = localizer;
+            _fileService = fileService;
+            _exportService = exportService;
         }
+
         [Route("GetAll")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BusinessCard>>> GetAll()
@@ -27,8 +32,8 @@ namespace BusinessCardAPI.Controllers
             return Ok(cards);
         }
 
-        [Route("GetById")]
-        [HttpGet("{id}")]
+        [Route("GetById/{id}")]
+        [HttpGet]
         public async Task<ActionResult<BusinessCard>> GetById(int id)
         {
             var card = await _service.GetCardById(id);
@@ -59,8 +64,8 @@ namespace BusinessCardAPI.Controllers
             }
         }
 
-        [Route("Delete")]
-        [HttpDelete("{id}")]
+        [Route("Delete/{id}")]
+        [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _service.DeleteCard(id);
@@ -72,12 +77,84 @@ namespace BusinessCardAPI.Controllers
         }
 
         [Route("Filter")]
-        [HttpGet("filter")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<BusinessCard>>> Filter(
             [FromQuery] BusinessCardFilterDto filter)
         {
             var cards = await _service.FilterCards(filter);
             return Ok(cards);
+        }
+
+        [Route("ImportCsv")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<BusinessCard>>> ImportCsv(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new { message = _localizer["NoFileUploaded"] });
+            }
+
+            if (!file.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { message = _localizer["FileMustBeCsv"] });
+            }
+
+            try
+            {
+                using var stream = file.OpenReadStream();
+                var cards = await _fileService.ParseCsv(stream);
+                var imported = await _fileService.ImportCards(cards);
+                return Ok(imported);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = _localizer["ImportError"], error = ex.Message });
+            }
+        }
+
+        [Route("ImportXml")]
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<BusinessCard>>> ImportXml(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new { message = _localizer["NoFileUploaded"] });
+            }
+
+            if (!file.FileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { message = _localizer["FileMustBeXml"] });
+            }
+
+            try
+            {
+                using var stream = file.OpenReadStream();
+                var cards = await _fileService.ParseXml(stream);
+                var imported = await _fileService.ImportCards(cards);
+                return Ok(imported);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = _localizer["ImportError"], error = ex.Message });
+            }
+        }
+
+        [Route("ExportCsv")]
+        [HttpGet]
+        public async Task<IActionResult> ExportCsv()
+        {
+            var cards = await _service.GetAllCards();
+            var csvData = await _exportService.ExportToCsv(cards);
+            return File(csvData, "text/csv", $"business-cards-{DateTime.Now:yyyyMMdd}.csv");
+        }
+
+        [Route("ExportXml")]
+        [HttpGet]
+        public async Task<IActionResult> ExportXml()
+        {
+            var cards = await _service.GetAllCards();
+            var xmlData = await _exportService.ExportToXml(cards);
+            return File(xmlData, "application/xml", $"business-cards-{DateTime.Now:yyyyMMdd}.xml");
         }
     }
 }

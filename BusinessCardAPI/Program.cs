@@ -39,6 +39,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IBusinessCardRepository, BusinessCardRepository>();
 builder.Services.AddScoped<IBusinessCardService, BusinessCardService>();
+builder.Services.AddScoped<IFileImportService, FileImportService>();
+builder.Services.AddScoped<IExportService, ExportService>();
 
 
 
