@@ -1,0 +1,66 @@
+﻿using BusinessCardAPI.Data.Repositories;
+using BusinessCardAPI.Exceptions;
+using BusinessCardAPI.Models;
+using BusinessCardAPI.Models.DTOs;
+using BusinessCardAPI.Services.Interfaces;
+using BusinessCardAPI.Utilities;
+using Microsoft.Extensions.Localization;
+using Resources;
+
+namespace BusinessCardAPI.Services
+{
+    public class BusinessCardService : IBusinessCardService
+    {
+        private readonly IBusinessCardRepository _repository;
+        private readonly IStringLocalizer<SharedResource> _localizer;
+
+        public BusinessCardService( IBusinessCardRepository repository, IStringLocalizer<SharedResource> localizer)
+        {
+            _repository = repository;
+            _localizer = localizer;
+        }
+
+        public async Task<IEnumerable<BusinessCard>> GetAllCards()
+        {
+            var cards = await _repository.GetAll();
+            return cards;
+        }
+        public async Task<BusinessCard?> GetCardById(int id)
+        {
+            var card = await _repository.GetById(id);
+            return card;
+        }
+        public async Task<BusinessCard> CreateCard(BusinessCardCreateDto dto)
+        {
+            ValidateRequest(dto);
+            
+            var card = new BusinessCard(dto.Name , dto.Gender , dto.DateOfBirth , dto.Email , dto.Phone , dto.Address , dto.Photo , DateTime.UtcNow);
+            var created = await _repository.Create(card);
+
+            return created;
+        }
+        private void ValidateRequest(BusinessCardCreateDto dto)
+        {
+            if (!ValidationHelper.IsValidBase64Photo(dto.Photo))
+                throw new ArgumentException(_localizer["InvalidBase64Photo"]);
+            if (!ValidationHelper.IsValidPhone(dto.Phone))
+                throw new ArgumentException(_localizer["InvalidPhoneNumber"]);
+            if (!ValidationHelper.IsValidEmail(dto.Email))
+                throw new ArgumentException(_localizer["InvalidEmail"]);
+            if (!ValidationHelper.IsValidGender(dto.Gender))
+                throw new ArgumentException(_localizer["InvalidGender"]);
+        }
+
+        public async Task<bool> DeleteCard(int id)
+        {
+            var result = await _repository.Delete(id);
+            return result;
+        }
+
+        public async Task<IEnumerable<BusinessCard>> FilterCards(BusinessCardFilterDto filter)
+        {
+            var cards = await _repository.Filter(filter);
+            return cards;
+        }
+    }
+}

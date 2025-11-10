@@ -1,5 +1,6 @@
 using BusinessCardAPI.Data;
 using BusinessCardAPI.Data.Repositories;
+using BusinessCardAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -33,6 +34,7 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddScoped<IBusinessCardRepository, BusinessCardRepository>();
+builder.Services.AddScoped<IBusinessCardService, IBusinessCardService>();
 
 var app = builder.Build();
 
