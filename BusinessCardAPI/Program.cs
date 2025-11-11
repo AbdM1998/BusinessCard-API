@@ -1,3 +1,4 @@
+using BusinessCardAPI.CultureProviders;
 using BusinessCardAPI.Data;
 using BusinessCardAPI.Interfaces.Repositories;
 using BusinessCardAPI.Interfaces.Services;
@@ -47,21 +48,33 @@ builder.Services.AddScoped<IExportService, ExportService>();
 
 
 // Localization Configuration
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddLocalization(options => options.ResourcesPath = "");
+
+var supportedCultures = new List<CultureInfo>()
+                {
+                    new CultureInfo("ar-JO"),
+                    new CultureInfo("en-US")
+                };
+
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[]
-    {
-        new CultureInfo("en"),
-        new CultureInfo("ar")
-    };
-    options.DefaultRequestCulture = new RequestCulture("en");
+  
+    options.DefaultRequestCulture = new RequestCulture(culture: "en-US", uiCulture: "en-US");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
+    options.RequestCultureProviders = new[] { new UserProfileRequestCultureProvider() };
 });
 
 var app = builder.Build();
+
+app.UseRequestLocalization(new RequestLocalizationOptions()
+{
+    DefaultRequestCulture = new RequestCulture(culture: "en-US", uiCulture: "en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures,
+    RequestCultureProviders = new[] { new UserProfileRequestCultureProvider() }
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -76,5 +89,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

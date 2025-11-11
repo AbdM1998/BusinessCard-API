@@ -32,12 +32,19 @@ namespace BusinessCardAPI.Services
         }
         public async Task<BusinessCard> CreateCard(BusinessCardCreateDto dto)
         {
-            ValidateRequest(dto);
-            
-            var card = new BusinessCard(dto.Name , dto.Gender , dto.DateOfBirth , dto.Email , dto.Phone , dto.Address , dto.Photo , DateTime.UtcNow);
-            var created = await _repository.Create(card);
+            try
+            {
+                ValidateRequest(dto);
 
-            return created;
+                var card = new BusinessCard(dto.Name, dto.Gender, dto.DateOfBirth, dto.Email, dto.Phone, dto.Address, dto.Photo, DateTime.UtcNow);
+                var created = await _repository.Create(card);
+                
+                return created;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         private void ValidateRequest(BusinessCardCreateDto dto)
         {

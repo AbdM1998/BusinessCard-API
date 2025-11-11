@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36121.58 d17.14
+VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCardAPI", "BusinessCardAPI\BusinessCardAPI.csproj", "{6B0962BF-565E-4DA0-84EF-7E6638A9B709}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCard.Test", "BusinessCard.Test\BusinessCard.Test.csproj", "{CF365DEA-3BE5-456D-86BD-14BC631D156A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6B0962BF-565E-4DA0-84EF-7E6638A9B709}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B0962BF-565E-4DA0-84EF-7E6638A9B709}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B0962BF-565E-4DA0-84EF-7E6638A9B709}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF365DEA-3BE5-456D-86BD-14BC631D156A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF365DEA-3BE5-456D-86BD-14BC631D156A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF365DEA-3BE5-456D-86BD-14BC631D156A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF365DEA-3BE5-456D-86BD-14BC631D156A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
