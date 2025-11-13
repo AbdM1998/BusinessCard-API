@@ -139,20 +139,44 @@ namespace BusinessCardAPI.Controllers
             }
         }
 
-        [Route("ExportCsv")]
+        [Route("ExportCsv/{id}")]
         [HttpGet]
-        public async Task<IActionResult> ExportCsv()
+        public async Task<IActionResult> ExportCsv(int? id )
         {
-            var cards = await _service.GetAllCards();
+            List<BusinessCard> cards = new List<BusinessCard>();
+            if (id.HasValue)
+            {
+                var card = await _service.GetCardById(id.Value);
+                if(card is not null)
+                    cards.Add(card);
+            }
+            else
+            {
+                var dbCards = await _service.GetAllCards();
+                if(dbCards.Any())
+                    cards.AddRange(dbCards);
+            }
             var csvData = await _exportService.ExportToCsv(cards);
             return File(csvData, "text/csv", $"business-cards-{DateTime.Now:yyyyMMdd}.csv");
         }
 
-        [Route("ExportXml")]
+        [Route("ExportXml/{id}")]
         [HttpGet]
-        public async Task<IActionResult> ExportXml()
+        public async Task<IActionResult> ExportXml(int? id)
         {
-            var cards = await _service.GetAllCards();
+            List<BusinessCard> cards = new List<BusinessCard>();
+            if (id.HasValue)
+            {
+                var card = await _service.GetCardById(id.Value);
+                if (card is not null)
+                    cards.Add(card);
+            }
+            else
+            {
+                var dbCards = await _service.GetAllCards();
+                if (dbCards.Any())
+                    cards.AddRange(dbCards);
+            }
             var xmlData = await _exportService.ExportToXml(cards);
             return File(xmlData, "application/xml", $"business-cards-{DateTime.Now:yyyyMMdd}.xml");
         }
