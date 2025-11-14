@@ -90,5 +90,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseMiddleware<MigrationMiddleware>();
+
 
 app.Run();
