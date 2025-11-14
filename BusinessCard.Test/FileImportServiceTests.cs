@@ -1,45 +1,45 @@
 ﻿using BusinessCardAPI.Interfaces.Services;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
+using BusinessCardAPI.Services;
 using FakeItEasy;
 using System.Net;
 using System.Numerics;
 using System.Reflection;
 using Xunit;
-namespace BusinessCard.Test
+namespace BusinessCardAPI.ServiceTests
 {
     public class FileImportServiceTests
     {
         private readonly IFileImportService _fileService;
+        private readonly IBusinessCardService _service;
 
         public FileImportServiceTests()
         {
-            _fileService = A.Fake<IFileImportService>();
+            _service = A.Fake<IBusinessCardService>();
+            _fileService = new FileImportService(_service);
         }
 
         [Fact]
         public async Task ImportCards_ValidFile_ReturnCardList()
         {
             // Arrange
-            var cards = new List<BusinessCardAPI.Models.Entities.BusinessCard>
-            {
-                new BusinessCardAPI.Models.Entities.BusinessCard("Abd" , "Male" , new DateTime(1998, 7, 30),"Abd@gmail.com" , "00962788456446" , "Test",null ,DateTime.UtcNow ),
-            };
-            var CardDto = new List<BusinessCardCreateDto>
-            {
-                new BusinessCardCreateDto { Name = "Abd", Gender = "Male", DateOfBirth = new DateTime(1998, 7, 30), Email = "Abd@gmail.com", Phone = "00962788456446", Address = "Test" }
-            };
+            var file = new FileStream("TestFiles\\business_cards.csv", FileMode.Open, FileAccess.Read);
+            var expectedCardList = await _fileService.ParseCsv(file);
 
-
-            A.CallTo(() => _fileService.ImportCards(CardDto)).Returns(Task.FromResult((IEnumerable<BusinessCardAPI.Models.Entities.BusinessCard>)cards));
-
+            A.CallTo(() => _service.CreateCard(A<BusinessCardCreateDto>._))
+                 .ReturnsLazily((BusinessCardCreateDto dto) => Task.FromResult(
+                     new BusinessCard(dto.Name, dto.Gender, dto.DateOfBirth, dto.Email, dto.Phone, dto.Address, dto.Photo, DateTime.UtcNow)
+                 ));
             // Act
-            var result = await _fileService.ImportCards(CardDto);
+            var actualCardList = await _fileService.ImportCards(expectedCardList);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Single(result);
-            Assert.Equal("Abd", result.First().Name);
+            Assert.NotNull(actualCardList);
+            Assert.NotEmpty(actualCardList);
+            Assert.Equal(expectedCardList.Count(), actualCardList.Count());
+            Assert.Equal(expectedCardList.First().Name, actualCardList.First().Name);
+            Assert.Equal(expectedCardList.First().Email, actualCardList.First().Email);
         }
     }
 }

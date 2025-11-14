@@ -1,38 +1,53 @@
-﻿using BusinessCardAPI.Interfaces.Services;
+﻿using BusinessCardAPI.Interfaces.Repositories;
+using BusinessCardAPI.Interfaces.Services;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
+using BusinessCardAPI.Services;
 using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using Resources;
 
-namespace BusinessCard.Test
+namespace BusinessCardAPI.ServiceTests
 {
     public class BusinessCardServiceTests
     {
         private readonly IBusinessCardService _service;
+        private readonly IStringLocalizer<SharedResource> _localizer;
+        private readonly IBusinessCardRepository _repository;
 
         public BusinessCardServiceTests()
         {
-            _service = A.Fake<IBusinessCardService>();
+            _repository = A.Fake<IBusinessCardRepository>();
+            _localizer = A.Fake<IStringLocalizer<SharedResource>>();
+            _service = new BusinessCardService(_repository, _localizer);
+
+
         }
         [Fact]
         public async Task GetAll_ReturnAll()
         {
             // Arrange
-            var cardsList = new List<BusinessCardAPI.Models.Entities.BusinessCard>
+            IEnumerable<BusinessCard> expectedCardList = new List<BusinessCard>
             {
-                new BusinessCardAPI.Models.Entities.BusinessCard("Abd" , "Mael" , new DateTime(1998, 7, 30),"Abd@gmail.com" , "00962788456446" , "Test",null ,DateTime.UtcNow ),
-                new BusinessCardAPI.Models.Entities.BusinessCard("Mohammed" , "Male" , new DateTime(1998, 7, 30),"Mohammed@gmail.com" , "00962777390960" , "Test",null ,DateTime.UtcNow ),
+                new BusinessCard("Abd" , "Mael" , new DateTime(1998, 7, 30),"Abd@gmail.com" , "00962788456446" , "Test",null ,DateTime.UtcNow ),
+                new BusinessCard("Mohammed" , "Male" , new DateTime(1998, 7, 30),"Mohammed@gmail.com" , "00962777390960" , "Test",null ,DateTime.UtcNow ),
             };
 
-            A.CallTo(() => _service.GetAllCards()).Returns(Task.FromResult((IEnumerable<BusinessCardAPI.Models.Entities.BusinessCard>)cardsList));
+
+            A.CallTo(() => _repository.GetAll()).Returns(Task.FromResult(expectedCardList));
 
             // Act
-            var cards = await _service.GetAllCards();
+            IEnumerable<BusinessCard> actualCardList =await _service.GetAllCards();
 
             // Assert
-            Assert.NotNull(cards);
-            Assert.NotEmpty(cards);
-            Assert.Equal(2, cards.Count());
+            Assert.True(_repository.GetAll().IsCompletedSuccessfully);
+           
+            Assert.NotNull(actualCardList);
+            Assert.NotEmpty(actualCardList);
+            Assert.Equal(expectedCardList.Count(), actualCardList.Count());
+            Assert.Equal(expectedCardList.ElementAt(0), actualCardList.ElementAt(0));
+            Assert.Equal(expectedCardList.ElementAt(1), actualCardList.ElementAt(1));
         }
 
         [Fact]
@@ -41,67 +56,74 @@ namespace BusinessCard.Test
         {
             // Arrange
             int cardId = 1;
-            var card = new BusinessCardAPI.Models.Entities.BusinessCard("Abd", "Male", new DateTime(1998, 7, 30), "Abd@gmail.com", "00962788456446", "Test", null, DateTime.UtcNow)
+            BusinessCard expectedCard = new BusinessCard("Abd", "Male", new DateTime(1998, 7, 30), "Abd@gmail.com", "00962788456446", "Test", null, DateTime.UtcNow)
             {
                 Id = 1
             };
-            A.CallTo(() => _service.GetCardById(cardId)).Returns(Task.FromResult(card));
+            A.CallTo(() => _repository.GetById(cardId)).Returns(Task.FromResult(expectedCard));
 
             // Act
-            var result = await _service.GetCardById(cardId);
+            BusinessCard? acutalCard = await _service.GetCardById(cardId);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(cardId, result.Id);
-            Assert.Equal("Abd", result.Name);
-            Assert.Equal("Abd@gmail.com", result.Email);
+            Assert.True(_repository.GetById(cardId).IsCompletedSuccessfully);
+
+            Assert.NotNull(acutalCard);
+            Assert.Equal(cardId, acutalCard.Id);
+            Assert.Equal("Abd", acutalCard.Name);
+            Assert.Equal("Abd@gmail.com", acutalCard.Email);
 
         }
         [Fact]
         public async Task GetById_Invalid_ReturnCard()
         {
             // Arrange
-            A.CallTo(() => _service.GetCardById(1)).Returns(Task.FromResult((BusinessCardAPI.Models.Entities.BusinessCard?)null));
+            A.CallTo(() => _repository.GetById(1)).Returns(Task.FromResult((BusinessCard?)null));
 
             // Act
-            var result = await _service.GetCardById(1);
+            var acutalCard = await _service.GetCardById(1);
 
             // Assert
-            Assert.Null(result);
+            Assert.True(_repository.GetById(1).IsCompletedSuccessfully);
+          
+            Assert.Null(acutalCard);
         }
 
         [Fact]
         public async Task CreateCard_ValidData_ReturnCard()
         {
             // Arrange
-            var card = new BusinessCardAPI.Models.Entities.BusinessCard("Abd", "Male", new DateTime(1998, 7, 30), "Abd@gmail.com", "00962788456446", "Test", null, DateTime.UtcNow)
+            var expectedCard = new BusinessCard("Abd", "Male", new DateTime(1998, 7, 30), "Abd@gmail.com", "00962788456446", "Test", null, DateTime.UtcNow)
             {
                 Id = 1
             };
             var createDto = new BusinessCardCreateDto { Name = "Abd", Gender = "Male", DateOfBirth = new DateTime(1998, 7, 30), Email = "Abd@gmail.com", Phone = "00962788456446", Address = "Test" };
 
 
-            A.CallTo(() => _service.CreateCard(createDto)).Returns(card);
-
+            A.CallTo(() => _repository.Create(A<BusinessCard>._)).ReturnsLazily((BusinessCard expectedCardList) => Task.FromResult(expectedCardList));
             // Act
-            var result = await _service.CreateCard(createDto);
+            var acutalCard = await _service.CreateCard(createDto);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(1, result.Id);
-            Assert.Equal("Abd", result.Name);
+            Assert.True(_repository.Create(expectedCard).IsCompletedSuccessfully);
+           
+            
+            Assert.NotNull(acutalCard);
+            Assert.Equal("Abd", acutalCard.Name);
+            Assert.Equal("Abd@gmail.com", acutalCard.Email);
         }
 
         [Fact]
         public async Task DeleteCard_ValidId_ReturnTrue()
         {
             // Arrange
-            A.CallTo(() => _service.DeleteCard(1)).Returns(true);
+            A.CallTo(() => _repository.Delete(1)).Returns(true);
 
             // Act
             var result = await _service.DeleteCard(1);
 
             // Assert
+            Assert.True(_repository.Delete(1).IsCompletedSuccessfully);
             Assert.True(result);
         }
 
@@ -109,12 +131,13 @@ namespace BusinessCard.Test
         public async Task DeleteCard_InvalidId_ReturnFalse()
         {
             // Arrange
-            A.CallTo(() => _service.DeleteCard(1)).Returns(false);
+            A.CallTo(() => _repository.Delete(1)).Returns(false);
 
             // Act
             var result = await _service.DeleteCard(1);
 
             // Assert
+            Assert.True(_repository.Delete(1).IsCompletedSuccessfully);
             Assert.False(result);
         }
 
@@ -124,20 +147,23 @@ namespace BusinessCard.Test
             // Arrange
             var filter = new BusinessCardFilterDto { Name = "Abd" };
 
-            var cardsList = new List<BusinessCardAPI.Models.Entities.BusinessCard>
+            var expectedCardList = new List<BusinessCard>
             {
-                new BusinessCardAPI.Models.Entities.BusinessCard("Abd" , "Male" , new DateTime(1998, 7, 30),"Abd@gmail.com" , "00962788456446" , "Test",null ,DateTime.UtcNow ),
+                new BusinessCard("Abd" , "Male" , new DateTime(1998, 7, 30),"Abd@gmail.com" , "00962788456446" , "Test",null ,DateTime.UtcNow ),
             };
 
-            A.CallTo(() => _service.FilterCards(filter)).Returns(Task.FromResult((IEnumerable<BusinessCardAPI.Models.Entities.BusinessCard>)cardsList));
+            A.CallTo(() => _repository.Filter(filter)).Returns(Task.FromResult((IEnumerable<BusinessCard>)expectedCardList));
 
             // Act
-            var result = await _service.FilterCards(filter);
+            var actualCardList = await _service.FilterCards(filter);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Contains("Abd", result.First().Name);
-            Assert.Contains("Abd@gmail.com", result.First().Email);
+            Assert.True(_repository.Filter(filter).IsCompletedSuccessfully);
+
+            Assert.NotNull(actualCardList);
+            Assert.Single(actualCardList);
+            Assert.Contains("Abd", actualCardList.First().Name);
+            Assert.Contains("Abd@gmail.com", actualCardList.First().Email);
         }
     }
 }

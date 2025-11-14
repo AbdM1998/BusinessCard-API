@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCardAPI", "BusinessCardAPI\BusinessCardAPI.csproj", "{6B0962BF-565E-4DA0-84EF-7E6638A9B709}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCard.Test", "BusinessCard.Test\BusinessCard.Test.csproj", "{CF365DEA-3BE5-456D-86BD-14BC631D156A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessCardAPI.ServiceTests", "BusinessCard.Test\BusinessCardAPI.ServiceTests.csproj", "{CF365DEA-3BE5-456D-86BD-14BC631D156A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

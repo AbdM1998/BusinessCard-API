@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BusinessCards>
+  <BusinessCard>
+    <Id>6</Id>
+    <Name>abd</Name>
+    <Gender>Male</Gender>
+    <DateOfBirth>1222-07-30</DateOfBirth>
+    <Email>abdalruhman.mustafa@gmail.com</Email>
+    <Phone>0078884564</Phone>
+    <Address>المشيرفة</Address>
+    <Photo></Photo>
+  </BusinessCard>
+  <BusinessCard>
+    <Id>2</Id>
+    <Name>Jane Smith</Name>
+    <Gender>Female</Gender>
+    <DateOfBirth>1985-05-20</DateOfBirth>
+    <Email>jane.smith@example.com</Email>
+    <Phone>+0987654321</Phone>
+    <Address>456 Oak Avenue, Los Angeles, CA 90001</Address>
+    <Photo></Photo>
+  </BusinessCard>
+  <BusinessCard>
+    <Id>4</Id>
+    <Name>Emily Davis</Name>
+    <Gender>Female</Gender>
+    <DateOfBirth>1992-03-25</DateOfBirth>
+    <Email>emily.davis@example.com</Email>
+    <Phone>+5544332211</Phone>
+    <Address>321 Elm Street, Houston, TX 77001</Address>
+    <Photo></Photo>
+  </BusinessCard>
+  <BusinessCard>
+    <Id>5</Id>
+    <Name>David Wilson</Name>
+    <Gender>Male</Gender>
+    <DateOfBirth>1987-07-10</DateOfBirth>
+    <Email>david.wilson@example.com</Email>
+    <Phone>+9988776655</Phone>
+    <Address>654 Maple Drive, Phoenix, AZ 85001</Address>
+    <Photo></Photo>
+  </BusinessCard>
+</BusinessCards>

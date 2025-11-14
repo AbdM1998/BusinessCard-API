@@ -1,0 +1,5 @@
+﻿Id,Name,Gender,DateOfBirth,Email,Phone,Address,Photo
+0,abd,Male,07/30/1222 00:00:00,abdalruhman.mustafa@gmail.com,0078884564,المشيرفة,
+0,Jane Smith,Female,05/20/1985 00:00:00,jane.smith@example.com,+0987654321,"456 Oak Avenue, Los Angeles, CA 90001",
+0,Emily Davis,Female,03/25/1992 00:00:00,emily.davis@example.com,+5544332211,"321 Elm Street, Houston, TX 77001",
+0,David Wilson,Male,07/10/1987 00:00:00,david.wilson@example.com,+9988776655,"654 Maple Drive, Phoenix, AZ 85001",
