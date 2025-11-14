@@ -141,7 +141,7 @@ namespace BusinessCardAPI.Controllers
 
         [Route("ExportCsv")]
         [HttpGet]
-        public async Task<IActionResult> ExportCsv([FromQuery] int? id )
+        public async Task<IActionResult> ExportCsv([FromQuery] int? id , [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             List<BusinessCard> cards = new List<BusinessCard>();
             if (id.HasValue)
@@ -152,7 +152,7 @@ namespace BusinessCardAPI.Controllers
             }
             else
             {
-                var dbCards = await _service.GetAllCards();
+                var dbCards = await _service.GetAllCards(pageNumber, pageSize);
                 if (dbCards is not null)
                     if(dbCards.Cards.Any())
                         cards.AddRange(dbCards.Cards);
@@ -163,7 +163,7 @@ namespace BusinessCardAPI.Controllers
 
         [Route("ExportXml")]
         [HttpGet]
-        public async Task<IActionResult> ExportXml([FromQuery]  int? id)
+        public async Task<IActionResult> ExportXml([FromQuery]  int? id , [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             List<BusinessCard> cards = new List<BusinessCard>();
             if (id.HasValue)
@@ -174,7 +174,7 @@ namespace BusinessCardAPI.Controllers
             }
             else
             {
-                var dbCards = await _service.GetAllCards();
+                var dbCards = await _service.GetAllCards(pageNumber , pageSize);
                 if (dbCards is not null)
                     if (dbCards.Cards.Any())
                         cards.AddRange(dbCards.Cards);
