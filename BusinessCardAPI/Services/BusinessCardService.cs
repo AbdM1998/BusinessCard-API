@@ -4,6 +4,7 @@ using BusinessCardAPI.Interfaces.Services;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
 using BusinessCardAPI.Utilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Resources;
 
@@ -20,9 +21,10 @@ namespace BusinessCardAPI.Services
             _localizer = localizer;
         }
 
-        public async Task<IEnumerable<BusinessCard>> GetAllCards()
+        public async Task<PagedResult<BusinessCard>> GetAllCards(int pageNumber = 1,int pageSize = 10)
         {
-            var cards = await _repository.GetAll();
+
+            var cards = await _repository.GetAll(pageNumber, pageSize);
             return cards;
         }
         public async Task<BusinessCard?> GetCardById(int id)

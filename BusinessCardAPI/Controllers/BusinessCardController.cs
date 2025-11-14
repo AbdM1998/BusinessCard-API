@@ -26,9 +26,9 @@ namespace BusinessCardAPI.Controllers
 
         [Route("GetAll")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BusinessCard>>> GetAll()
+        public async Task<ActionResult<PagedResult<BusinessCard>>> GetAll([FromQuery] int pageNumber = 1 , [FromQuery] int pageSize = 10)
         {
-            var cards = await _service.GetAllCards();
+            var cards = await _service.GetAllCards(pageNumber ,  pageSize);
             return Ok(cards);
         }
 
@@ -153,8 +153,9 @@ namespace BusinessCardAPI.Controllers
             else
             {
                 var dbCards = await _service.GetAllCards();
-                if(dbCards.Any())
-                    cards.AddRange(dbCards);
+                if (dbCards is not null)
+                    if(dbCards.Cards.Any())
+                        cards.AddRange(dbCards.Cards);
             }
             var csvData = await _exportService.ExportToCsv(cards);
             return File(csvData, "text/csv", $"business-cards-{DateTime.Now:yyyyMMdd}.csv");
@@ -174,8 +175,9 @@ namespace BusinessCardAPI.Controllers
             else
             {
                 var dbCards = await _service.GetAllCards();
-                if (dbCards.Any())
-                    cards.AddRange(dbCards);
+                if (dbCards is not null)
+                    if (dbCards.Cards.Any())
+                        cards.AddRange(dbCards.Cards);
             }
             var xmlData = await _exportService.ExportToXml(cards);
             return File(xmlData, "application/xml", $"business-cards-{DateTime.Now:yyyyMMdd}.xml");

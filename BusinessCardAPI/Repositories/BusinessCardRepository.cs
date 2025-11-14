@@ -3,6 +3,7 @@ using BusinessCardAPI.Interfaces.Repositories;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BusinessCardAPI.Repositories
 {
@@ -17,9 +18,19 @@ namespace BusinessCardAPI.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<BusinessCard>> GetAll()
+        public async Task<PagedResult<BusinessCard>> GetAll(int pageNumber = 1 , int pageSize = 10)
         {
-            return await _context.BusinessCards.OrderByDescending(bc => bc.CreatedAt).ToListAsync();
+            var totalCount = await _context.BusinessCards.CountAsync();
+
+            var cards = await _context.BusinessCards.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderByDescending(bc=>bc.CreatedAt).ToListAsync();
+
+            return new PagedResult<BusinessCard>
+            {
+                Cards = cards,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
         public async Task<BusinessCard?> GetById(int id)

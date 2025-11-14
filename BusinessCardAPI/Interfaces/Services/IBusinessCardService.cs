@@ -5,7 +5,7 @@ namespace BusinessCardAPI.Interfaces.Services
 {
     public interface IBusinessCardService
     {
-        Task<IEnumerable<BusinessCard>> GetAllCards();
+        Task<PagedResult<BusinessCard>> GetAllCards(int pageNumber = 1 , int pageSize = 10);
         Task<BusinessCard?> GetCardById(int id);
         Task<BusinessCard> CreateCard(BusinessCardCreateDto dto);
         Task<bool> DeleteCard(int id);

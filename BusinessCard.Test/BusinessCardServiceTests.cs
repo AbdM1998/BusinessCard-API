@@ -33,21 +33,28 @@ namespace BusinessCardAPI.ServiceTests
                 new BusinessCard("Abd" , "Mael" , new DateTime(1998, 7, 30),"Abd@gmail.com" , "00962788456446" , "Test",null ,DateTime.UtcNow ),
                 new BusinessCard("Mohammed" , "Male" , new DateTime(1998, 7, 30),"Mohammed@gmail.com" , "00962777390960" , "Test",null ,DateTime.UtcNow ),
             };
+            PagedResult<BusinessCard> expectedpagedResult = new PagedResult<BusinessCard>
+            {
+                Cards = expectedCardList,
+                TotalCount = 2,
+                PageNumber = 1,
+                PageSize = 2
+            };
+          
 
 
-            A.CallTo(() => _repository.GetAll()).Returns(Task.FromResult(expectedCardList));
+            A.CallTo(() => _repository.GetAll(1 , 2)).Returns(Task.FromResult(expectedpagedResult));
 
             // Act
-            IEnumerable<BusinessCard> actualCardList =await _service.GetAllCards();
+            PagedResult<BusinessCard> actualPagedResult = await _service.GetAllCards(1,2);
 
             // Assert
             Assert.True(_repository.GetAll().IsCompletedSuccessfully);
            
-            Assert.NotNull(actualCardList);
-            Assert.NotEmpty(actualCardList);
-            Assert.Equal(expectedCardList.Count(), actualCardList.Count());
-            Assert.Equal(expectedCardList.ElementAt(0), actualCardList.ElementAt(0));
-            Assert.Equal(expectedCardList.ElementAt(1), actualCardList.ElementAt(1));
+            Assert.Equal(expectedpagedResult.Cards.Count(), actualPagedResult.Cards.Count());
+            Assert.Equal(expectedpagedResult.Cards.ElementAt(0), actualPagedResult.Cards.ElementAt(0));
+            Assert.Equal(expectedpagedResult.Cards.ElementAt(1), actualPagedResult.Cards.ElementAt(1));
+            Assert.True(actualPagedResult.Cards.Count() == expectedpagedResult.TotalCount);
         }
 
         [Fact]
