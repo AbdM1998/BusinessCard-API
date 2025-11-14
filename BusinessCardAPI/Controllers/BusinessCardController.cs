@@ -139,9 +139,9 @@ namespace BusinessCardAPI.Controllers
             }
         }
 
-        [Route("ExportCsv/{id}")]
+        [Route("ExportCsv")]
         [HttpGet]
-        public async Task<IActionResult> ExportCsv(int? id )
+        public async Task<IActionResult> ExportCsv([FromQuery] int? id )
         {
             List<BusinessCard> cards = new List<BusinessCard>();
             if (id.HasValue)
@@ -161,9 +161,9 @@ namespace BusinessCardAPI.Controllers
             return File(csvData, "text/csv", $"business-cards-{DateTime.Now:yyyyMMdd}.csv");
         }
 
-        [Route("ExportXml/{id}")]
+        [Route("ExportXml")]
         [HttpGet]
-        public async Task<IActionResult> ExportXml(int? id)
+        public async Task<IActionResult> ExportXml([FromQuery]  int? id)
         {
             List<BusinessCard> cards = new List<BusinessCard>();
             if (id.HasValue)
