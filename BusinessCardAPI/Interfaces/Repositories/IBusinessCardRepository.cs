@@ -8,6 +8,7 @@ namespace BusinessCardAPI.Interfaces.Repositories
         Task<PagedResult<BusinessCard>> GetAll(int pageNumber = 1 , int pageSize = 10);
         Task<BusinessCard?> GetById(int id);
         Task<BusinessCard> Create(BusinessCard businessCard);
+        Task CreateBulk(IEnumerable<BusinessCard> businessCardList);
         Task<bool> Delete(int id);
         Task<IEnumerable<BusinessCard>> Filter(BusinessCardFilterDto filter);
     }

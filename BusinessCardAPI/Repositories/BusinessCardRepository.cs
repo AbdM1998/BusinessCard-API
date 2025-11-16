@@ -44,6 +44,11 @@ namespace BusinessCardAPI.Repositories
             await _context.SaveChangesAsync();
             return businessCard;
         }
+        public async Task CreateBulk(IEnumerable<BusinessCard> businessCardList)
+        {
+            await _context.BusinessCards.AddRangeAsync(businessCardList);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<bool> Delete(int id)
         {

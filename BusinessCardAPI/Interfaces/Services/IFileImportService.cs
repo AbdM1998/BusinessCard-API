@@ -7,7 +7,7 @@ namespace BusinessCardAPI.Interfaces.Services
     {
         Task<IEnumerable<BusinessCardCreateDto>> ParseCsv(Stream fileStream);
         Task<IEnumerable<BusinessCardCreateDto>> ParseXml(Stream fileStream);
-        Task<IEnumerable<BusinessCard>> ImportCards(IEnumerable<BusinessCardCreateDto> cards);
+        Task ImportCards(IEnumerable<BusinessCardCreateDto> cards);
 
     }
 

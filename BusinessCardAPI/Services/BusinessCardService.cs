@@ -48,6 +48,26 @@ namespace BusinessCardAPI.Services
                 throw ex;
             }
         }
+        public async Task CreateBulk(IEnumerable<BusinessCardCreateDto> dtoCardList)
+        {
+            try
+            {
+                List<BusinessCard> cards = new List<BusinessCard>();
+                foreach (var cardDto in dtoCardList)
+                {
+                    ValidateRequest(cardDto);
+                    var card = new BusinessCard(cardDto.Name, cardDto.Gender, cardDto.DateOfBirth, cardDto.Email, cardDto.Phone, cardDto.Address, cardDto.Photo, DateTime.UtcNow);
+                    cards.Add(card);
+                }
+
+               await _repository.CreateBulk(cards);
+
+            }
+            catch (Exception ex)
+            {
+                throw new CreateCardException(ex.Message);
+            }
+        }
         private void ValidateRequest(BusinessCardCreateDto dto)
         {
             if (!ValidationHelper.IsValidBase64Photo(dto.Photo))

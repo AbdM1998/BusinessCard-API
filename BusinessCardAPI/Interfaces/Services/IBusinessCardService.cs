@@ -10,6 +10,6 @@ namespace BusinessCardAPI.Interfaces.Services
         Task<BusinessCard> CreateCard(BusinessCardCreateDto dto);
         Task<bool> DeleteCard(int id);
         Task<IEnumerable<BusinessCard>> FilterCards(BusinessCardFilterDto filter);
-
+        Task CreateBulk(IEnumerable<BusinessCardCreateDto> cards);
     }
 }

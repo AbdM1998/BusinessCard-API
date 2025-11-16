@@ -40,17 +40,17 @@ namespace BusinessCardAPI.ServiceTests
                 PageNumber = 1,
                 PageSize = 2
             };
-          
 
 
-            A.CallTo(() => _repository.GetAll(1 , 2)).Returns(Task.FromResult(expectedpagedResult));
+
+            A.CallTo(() => _repository.GetAll(1, 2)).Returns(Task.FromResult(expectedpagedResult));
 
             // Act
-            PagedResult<BusinessCard> actualPagedResult = await _service.GetAllCards(1,2);
+            PagedResult<BusinessCard> actualPagedResult = await _service.GetAllCards(1, 2);
 
             // Assert
             Assert.True(_repository.GetAll().IsCompletedSuccessfully);
-           
+
             Assert.Equal(expectedpagedResult.Cards.Count(), actualPagedResult.Cards.Count());
             Assert.Equal(expectedpagedResult.Cards.ElementAt(0), actualPagedResult.Cards.ElementAt(0));
             Assert.Equal(expectedpagedResult.Cards.ElementAt(1), actualPagedResult.Cards.ElementAt(1));
@@ -77,8 +77,7 @@ namespace BusinessCardAPI.ServiceTests
 
             Assert.NotNull(acutalCard);
             Assert.Equal(cardId, acutalCard.Id);
-            Assert.Equal("Abd", acutalCard.Name);
-            Assert.Equal("Abd@gmail.com", acutalCard.Email);
+            Assert.Equal(expectedCard, acutalCard);
 
         }
         [Fact]
@@ -92,7 +91,7 @@ namespace BusinessCardAPI.ServiceTests
 
             // Assert
             Assert.True(_repository.GetById(1).IsCompletedSuccessfully);
-          
+
             Assert.Null(acutalCard);
         }
 
@@ -108,16 +107,45 @@ namespace BusinessCardAPI.ServiceTests
 
 
             A.CallTo(() => _repository.Create(A<BusinessCard>._)).ReturnsLazily((BusinessCard expectedCardList) => Task.FromResult(expectedCardList));
+
             // Act
-            var acutalCard = await _service.CreateCard(createDto);
+            var actualCard = await _service.CreateCard(createDto);
 
             // Assert
             Assert.True(_repository.Create(expectedCard).IsCompletedSuccessfully);
-           
-            
-            Assert.NotNull(acutalCard);
-            Assert.Equal("Abd", acutalCard.Name);
-            Assert.Equal("Abd@gmail.com", acutalCard.Email);
+
+            Assert.NotNull(actualCard);
+            Assert.Equal("Abd", actualCard.Name);
+            Assert.Equal("Male", actualCard.Gender);
+            Assert.Equal(new DateTime(1998, 7, 30), actualCard.DateOfBirth);
+            Assert.Equal("Abd@gmail.com", actualCard.Email);
+            Assert.Equal("00962788456446", actualCard.Phone);
+            Assert.Equal("Test", actualCard.Address);
+        }
+        [Fact]
+        public async Task CreateBulk_ValidData_ShouldPass()
+        {
+            // Arrange
+            A.CallTo(() => _repository.CreateBulk(A<IEnumerable<BusinessCard>>._))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var createListDto = new List<BusinessCardCreateDto>()
+                {
+                    new BusinessCardCreateDto { Name = "Abd", Gender = "Male", DateOfBirth = new DateTime(1998, 7, 30), Email = "Abd@gmail.com", Phone = "00962788456446", Address = "Test" },
+                    new BusinessCardCreateDto { Name = "Moahmmed", Gender = "Male", DateOfBirth = new DateTime(1998, 7, 30), Email = "Moahmmed@gmail.com", Phone = "00962788456446", Address = "Test" }
+                };
+
+            await _service.CreateBulk(createListDto);
+
+            // Assert
+            A.CallTo(() => _repository.CreateBulk(A<IEnumerable<BusinessCard>>.That.Matches(cards =>
+                cards.Count() == 2 &&
+                cards.ElementAt(0).Name == "Abd" &&
+                cards.ElementAt(0).Email == "Abd@gmail.com" &&
+                cards.ElementAt(1).Name == "Moahmmed" &&
+                cards.ElementAt(1).Email == "Moahmmed@gmail.com"
+            ))).MustHaveHappenedOnceExactly();
         }
 
         [Fact]

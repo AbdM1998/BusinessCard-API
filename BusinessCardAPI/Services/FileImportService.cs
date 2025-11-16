@@ -79,24 +79,16 @@ namespace BusinessCardAPI.Services
                 throw new XmlParsingException("Failed to parse XML file", ex);
             }
         }
-        public async Task<IEnumerable<BusinessCard>> ImportCards(IEnumerable<BusinessCardCreateDto> cards)
+        public async Task ImportCards(IEnumerable<BusinessCardCreateDto> cards)
         {
-            var result = new List<BusinessCard>();
-
-            foreach (var dto in cards)
+            try
             {
-                try
-                {
-                    var created = await _businessCardService.CreateCard(dto);
-                    result.Add(created);
-                }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException($"Error importing card for {dto.Name}: {ex.Message}");
-                }
+                await _businessCardService.CreateBulk(cards);
             }
-
-            return result;
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Error importing card for {ex.Message}");
+            }
         }
     }
 }

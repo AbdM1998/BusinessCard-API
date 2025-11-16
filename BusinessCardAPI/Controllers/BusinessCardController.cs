@@ -103,8 +103,8 @@ namespace BusinessCardAPI.Controllers
             {
                 using var stream = file.OpenReadStream();
                 var cards = await _fileService.ParseCsv(stream);
-                var imported = await _fileService.ImportCards(cards);
-                return Ok(imported);
+                await _fileService.ImportCards(cards);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -130,8 +130,8 @@ namespace BusinessCardAPI.Controllers
             {
                 using var stream = file.OpenReadStream();
                 var cards = await _fileService.ParseXml(stream);
-                var imported = await _fileService.ImportCards(cards);
-                return Ok(imported);
+                await _fileService.ImportCards(cards);
+                return Ok();
             }
             catch (Exception ex)
             {
